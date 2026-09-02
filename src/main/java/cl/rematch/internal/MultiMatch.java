@@ -3,10 +3,7 @@ package cl.rematch.internal;
 import org.bytedeco.javacpp.*;
 import org.bytedeco.javacpp.annotation.*;
 
-@Platform(include = {
-        "REmatch/multi_match.hpp",
-        "REmatch/span.hpp"
-}, library = "jniREmatch")
+@Properties(inherit = REmatchConfig.class)
 @Namespace("REmatch")
 public class MultiMatch extends Pointer {
     static {

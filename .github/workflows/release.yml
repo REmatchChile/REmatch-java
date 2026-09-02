@@ -1,0 +1,199 @@
+name: Release
+on:
+  workflow_dispatch:
+
+jobs:
+  get_version:
+    name: Get REmatch-java version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Get version
+        run: |
+          version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          printf "$version" > version.txt
+          echo "Version: $version"
+
+      - name: Upload version
+        uses: actions/upload-artifact@v7
+        with:
+          name: version
+          path: version.txt
+
+  build:
+    name: Build ${{ matrix.classifier }}
+    runs-on: ${{ matrix.os }}
+    needs: get_version
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-11-arm
+            classifier: windows-arm64
+
+          - os: windows-2025
+            classifier: windows-x86_64
+
+          # - os: ubuntu-24.04-arm
+          #   classifier: linux-arm64
+
+          - os: ubuntu-24.04
+            classifier: linux-x86_64
+
+          - os: macos-26
+            classifier: macosx-arm64
+
+          - os: macos-26-intel
+            classifier: macosx-x86_64
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Resolve Maven dependencies
+        run: mvn dependency:resolve
+
+      - name: Print properties
+        shell: bash
+        run: mvn --version
+
+      - name: Configure CMake
+        run: cmake -Snative -Bbuild -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build CMake
+        run: cmake --build build --config Release
+
+      - name: Import GPG key
+        shell: bash
+        run: |
+          echo "${{ secrets.MAVEN_GPG_PRIVATE_KEY }}" | base64 --decode | gpg --batch --import
+
+      - name: Build
+        run: mvn --batch-mode clean verify
+        env:
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
+      - name: Show directory tree
+        shell: bash
+        run: |
+          find build/classes -print
+          find build/REmatch-install -print
+          find target -print
+
+      - name: Prepare platform artifact
+        if: matrix.classifier == 'linux-x86_64'
+        run: mvn -f pom-platform.xml verify
+
+      - name: Download version
+        uses: actions/download-artifact@v7
+        with:
+          name: version
+          path: .
+      - name: Set version as env variable
+        shell: bash
+        run: |
+          version=$(cat version.txt)
+          echo "VERSION=$version" >> $GITHUB_ENV
+          echo "Version: $version"
+
+      - name: Upload common artifacts
+        if: matrix.classifier == 'linux-x86_64'
+        uses: actions/upload-artifact@v7
+        with:
+          name: build-common
+          path: |
+            target/rematch-${{ env.VERSION }}-javadoc.jar*
+            target/rematch-${{ env.VERSION }}-sources.jar*
+            target/rematch-${{ env.VERSION }}.jar*
+            target/rematch-${{ env.VERSION }}.pom*
+
+      - if: matrix.classifier == 'linux-x86_64'
+        uses: actions/upload-artifact@v7
+        with:
+          name: build-platform
+          path: |
+            target/rematch-platform-${{ env.VERSION }}.pom*
+
+      - name: Upload build
+        uses: actions/upload-artifact@v7
+        with:
+          name: build-${{ matrix.classifier }}
+          path: |
+            target/rematch-${{ env.VERSION }}-${{ matrix.classifier }}.jar*
+
+  publish:
+    name: Publish to Maven Central
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v7
+        with:
+          pattern: build*
+
+      - name: Download version
+        uses: actions/download-artifact@v7
+        with:
+          name: version
+          path: .
+      - name: Set version as env variable
+        shell: bash
+        run: |
+          version=$(cat version.txt)
+          echo "VERSION=$version" >> $GITHUB_ENV
+          echo "Version: $version"
+
+      - name: Prepare bundle
+        run: |
+          mkdir -p cl/rematch/rematch/${VERSION}
+          cp build-windows-x86_64/* cl/rematch/rematch/${VERSION}
+          cp build-windows-arm64/* cl/rematch/rematch/${VERSION}
+          cp build-linux-x86_64/* cl/rematch/rematch/${VERSION}
+          # cp build-linux-arm64/* cl/rematch/rematch/${VERSION}
+          cp build-macosx-x86_64/* cl/rematch/rematch/${VERSION}
+          cp build-macosx-arm64/* cl/rematch/rematch/${VERSION}
+          cp build-common/* cl/rematch/rematch/${VERSION}
+
+          mkdir -p cl/rematch/rematch-platform/${VERSION}
+          cp build-platform/* cl/rematch/rematch-platform/${VERSION}
+
+          zip -r central-bundle.zip cl
+          unzip -l central-bundle.zip
+
+      - name: Publish rematch to Maven Central
+        run: |
+          curl --fail-with-body \
+            --verbose \
+            --header "Authorization: Bearer $MAVEN_CENTRAL_TOKEN" \
+            --form bundle=@central-bundle.zip \
+            https://central.sonatype.com/api/v1/publisher/upload

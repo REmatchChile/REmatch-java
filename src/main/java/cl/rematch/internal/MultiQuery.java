@@ -3,14 +3,7 @@ package cl.rematch.internal;
 import org.bytedeco.javacpp.*;
 import org.bytedeco.javacpp.annotation.*;
 
-@Platform(include = {
-        "REmatch/flags.hpp",
-        "REmatch/multi_query.hpp",
-        "REmatch/multi_match.hpp",
-        "REmatch/span.hpp",
-        "REmatch/multi_match_generator.hpp",
-        "<vector>", "string"
-}, library = "jniREmatch")
+@Properties(inherit = REmatchConfig.class)
 @Namespace("REmatch")
 public class MultiQuery extends Pointer {
     static {

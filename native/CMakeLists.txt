@@ -7,11 +7,17 @@ include(UseJava)
 
 set(JAVACPP_VERSION "1.5.13" CACHE STRING "JavaCPP version")
 
+find_program(MAVEN_EXECUTABLE mvn REQUIRED)
 if(WIN32)
-    set(MAVEN_REPO "$ENV{USERPROFILE}/.m2/repository")
+    set(MAVEN_COMMAND cmd.exe /c "${MAVEN_EXECUTABLE}")
 else()
-    set(MAVEN_REPO "$ENV{HOME}/.m2/repository")
+    set(MAVEN_COMMAND "${MAVEN_EXECUTABLE}")
 endif()
+execute_process(
+    COMMAND ${MAVEN_COMMAND} help:evaluate "-Dexpression=settings.localRepository" -q -DforceStdout
+    OUTPUT_VARIABLE MAVEN_REPO
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
 
 find_jar(
     JAVACPP_JAR
@@ -19,6 +25,9 @@ find_jar(
     PATHS "${MAVEN_REPO}/org/bytedeco/javacpp"
     PATH_SUFFIXES "${JAVACPP_VERSION}"
 )
+if(NOT JAVACPP_JAR)
+    message(FATAL_ERROR"Could not find JavaCPP ${JAVACPP_VERSION} JAR")
+endif()
 
 file(GLOB_RECURSE JAVACPP_SOURCES
     "${CMAKE_SOURCE_DIR}/../src/main/java/cl/rematch/internal/*.java"
@@ -78,10 +87,14 @@ set(JAVA_OPTS
     -o ${JNI_WRAPPER_LIBRARY}
 )
 
-if(MSVC)
+if(WIN32)
     list(APPEND JAVA_OPTS
         -Xcompiler "/std:c++17"
         -Xcompiler "/MT"
+    )
+else()
+    list(APPEND JAVA_OPTS
+        -Xcompiler "-std=c++17"
     )
 endif()
 

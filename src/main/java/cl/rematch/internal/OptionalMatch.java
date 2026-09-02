@@ -3,7 +3,7 @@ package cl.rematch.internal;
 import org.bytedeco.javacpp.*;
 import org.bytedeco.javacpp.annotation.*;
 
-@Platform(include = { "REmatch/match.hpp", "<optional>" }, library = "jniREmatch")
+@Properties(inherit = REmatchConfig.class)
 @Name("std::optional<REmatch::Match>")
 public class OptionalMatch extends Pointer {
     static {

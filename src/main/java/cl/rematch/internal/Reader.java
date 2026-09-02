@@ -4,9 +4,9 @@ import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.annotation.Name;
 import org.bytedeco.javacpp.annotation.Namespace;
-import org.bytedeco.javacpp.annotation.Platform;
+import org.bytedeco.javacpp.annotation.Properties;
 
-@Platform(include = "REmatch/fstream_reader.hpp", library = "jniREmatch")
+@Properties(inherit = REmatchConfig.class)
 @Namespace("REmatch")
 @Name("Reader")
 public class Reader extends Pointer {

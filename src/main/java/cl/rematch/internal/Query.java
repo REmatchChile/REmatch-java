@@ -3,16 +3,7 @@ package cl.rematch.internal;
 import org.bytedeco.javacpp.*;
 import org.bytedeco.javacpp.annotation.*;
 
-@Platform(include = {
-        "REmatch/flags.hpp",
-        "REmatch/query.hpp",
-        "REmatch/fstream_reader.hpp",
-        "REmatch/match.hpp",
-        "REmatch/span.hpp",
-        "REmatch/match_generator.hpp",
-        "<vector>", "string"
-
-}, library = "jniREmatch")
+@Properties(inherit = REmatchConfig.class)
 @Namespace("REmatch::library_interface")
 public class Query extends Pointer {
     static {

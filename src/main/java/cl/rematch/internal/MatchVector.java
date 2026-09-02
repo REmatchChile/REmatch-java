@@ -3,7 +3,7 @@ package cl.rematch.internal;
 import org.bytedeco.javacpp.*;
 import org.bytedeco.javacpp.annotation.*;
 
-@Platform(include = { "<vector>", "REmatch/match.hpp" }, library = "jniREmatch")
+@Properties(inherit = REmatchConfig.class)
 @Namespace("std")
 @Name("vector<REmatch::Match>")
 public class MatchVector extends Pointer {

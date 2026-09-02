@@ -3,10 +3,7 @@ package cl.rematch.internal;
 import org.bytedeco.javacpp.*;
 import org.bytedeco.javacpp.annotation.*;
 
-@Platform(include = {
-        "REmatch/fstream_reader.hpp",
-        "reader_wrapper_java.hpp",
-}, library = "jniREmatch")
+@Properties(inherit = REmatchConfig.class)
 @Name("ReaderWrapperJava")
 public class ReaderWrapper extends Pointer {
     static {

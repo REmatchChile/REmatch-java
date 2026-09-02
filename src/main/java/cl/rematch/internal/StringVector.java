@@ -3,7 +3,7 @@ package cl.rematch.internal;
 import org.bytedeco.javacpp.*;
 import org.bytedeco.javacpp.annotation.*;
 
-@Platform(include = { "<vector>", "<string>" }, library = "jniREmatch")
+@Properties(inherit = REmatchConfig.class)
 @Name("std::vector<std::string>")
 public class StringVector extends Pointer {
     static {

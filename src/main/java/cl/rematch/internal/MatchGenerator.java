@@ -3,12 +3,7 @@ package cl.rematch.internal;
 import org.bytedeco.javacpp.*;
 import org.bytedeco.javacpp.annotation.*;
 
-@Platform(include = {
-        "REmatch/match.hpp",
-        "REmatch/query.hpp",
-        "REmatch/constants.hpp",
-        "REmatch/match_generator.hpp"
-}, library = "jniREmatch")
+@Properties(inherit = REmatchConfig.class)
 @Namespace("REmatch")
 public class MatchGenerator extends Pointer {
     static {
