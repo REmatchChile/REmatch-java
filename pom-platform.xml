@@ -1,0 +1,150 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+
+  <name>REmatch</name>
+  <description>The REmatch library for Java: A novel regex engine for finding all matches over
+    documents.</description>
+  <url>https://rematch.cl/</url>
+
+  <groupId>cl.rematch</groupId>
+  <artifactId>rematch-platform</artifactId>
+  <version>0.1.1</version>
+  <packaging>pom</packaging>
+
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>https://opensource.org/license/mit</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Vicente Calisto</name>
+    </developer>
+    <developer>
+      <name>Patricia Silva</name>
+    </developer>
+    <developer>
+      <name>Gustavo Toro</name>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git://github.com/REmatchChile/REmatch-java.git</connection>
+    <developerConnection>scm:git:ssh://github.com:REmatchChile/REmatch-java.git</developerConnection>
+    <url>https://github.com/REmatchChile/REmatch-java</url>
+  </scm>
+
+  <properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>cl.rematch</groupId>
+      <artifactId>rematch</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>3.2.8</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>net.ju-n.maven.plugins</groupId>
+        <artifactId>checksum-maven-plugin</artifactId>
+        <version>1.2</version>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>files</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <fileSets>
+            <fileSet>
+              <directory>${project.build.directory}</directory>
+              <includes>
+                <include>*.pom</include>
+              </includes>
+            </fileSet>
+          </fileSets>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>cl.rematch</groupId>
+          <artifactId>rematch</artifactId>
+          <version>${project.version}</version>
+          <classifier>windows-x86_64</classifier>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>linux</id>
+      <activation>
+        <os>
+          <family>unix</family>
+          <name>Linux</name>
+        </os>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>cl.rematch</groupId>
+          <artifactId>rematch</artifactId>
+          <version>${project.version}</version>
+          <classifier>linux-x86_64</classifier>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>macos</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>cl.rematch</groupId>
+          <artifactId>rematch</artifactId>
+          <version>${project.version}</version>
+          <classifier>macosx-arm64</classifier>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+</project>

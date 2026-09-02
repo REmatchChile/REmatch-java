@@ -1,5 +1,6 @@
 # Compiled class file
 *.class
+target
 
 # Log file
 *.log
@@ -25,3 +26,6 @@ replay_pid*
 
 # cmake build
 build
+
+# vscode
+.vscode
