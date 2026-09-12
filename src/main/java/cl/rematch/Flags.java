@@ -1,17 +1,30 @@
 package cl.rematch;
 
-
 /**
  * Flags is used to pass options to the REQL Query.
  */
 public class Flags {
     private final cl.rematch.internal.Flags cppFlags;
 
+    /**
+     * Options for creating queries.
+     */
     public enum Mode {
+        /**
+         * Default value.
+         */
         NONE,
+        /**
+         * Matches are contained within a line.
+         */
         LINE_BY_LINE
     }
 
+    /**
+     * Creates a new Flags object with the value passed in mode.
+     * 
+     * @param mode the mode.
+     */
     public Flags(Mode mode) {
         switch (mode) {
             case LINE_BY_LINE:
@@ -23,7 +36,6 @@ public class Flags {
                 break;
         }
     }
-
 
     /**
      * Returns the internal value of the flags.

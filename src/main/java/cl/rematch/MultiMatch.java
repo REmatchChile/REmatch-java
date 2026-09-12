@@ -10,6 +10,12 @@ public class MultiMatch {
 
     private final cl.rematch.internal.MultiMatch cppMultiMatch;
 
+    /**
+     * Creates a new MultiMatch. This constructor is intended to be called
+     * internally.
+     * 
+     * @param cppMultiMatch internal multi match
+     */
     public MultiMatch(cl.rematch.internal.MultiMatch cppMultiMatch) {
         this.cppMultiMatch = cppMultiMatch;
     }
@@ -19,11 +25,11 @@ public class MultiMatch {
      * 
      * @return a vector of variables.
      */
-    public String[] variables() {
+    public List<String> variables() {
         cl.rematch.internal.StringVector cppVariables = cppMultiMatch.variables();
-        String[] variables = new String[(int) cppVariables.size()];
+        List<String> variables = new ArrayList<>();
         for (int i = 0; i < cppVariables.size(); i++) {
-            variables[i] = cppVariables.at(i).toString();
+            variables.add(cppVariables.at(i));
         }
         return variables;
     }
@@ -34,11 +40,11 @@ public class MultiMatch {
      * @param variableName the variable.
      * @return a vector of spans.
      */
-    public List<cl.rematch.internal.Span> spans(String variableName) {
+    public List<Span> spans(String variableName) throws REmatchException {
         cl.rematch.internal.SpanVector spanVec = cppMultiMatch.spans(variableName);
-        List<cl.rematch.internal.Span> spans = new ArrayList<>();
+        List<Span> spans = new ArrayList<>();
         for (int i = 0; i < spanVec.size(); i++) {
-            spans.add(spanVec.at(i));
+            spans.add(new Span(spanVec.at(i)));
         }
         return spans;
     }
@@ -49,11 +55,11 @@ public class MultiMatch {
      * @param variableId the variable id.
      * @return a vector of spans.
      */
-    public List<cl.rematch.internal.Span> spans(int variableId) {
+    public List<Span> spans(int variableId) throws REmatchException {
         cl.rematch.internal.SpanVector spanVec = cppMultiMatch.spans(variableId);
-        List<cl.rematch.internal.Span> spans = new ArrayList<>();
+        List<Span> spans = new ArrayList<>();
         for (int i = 0; i < spanVec.size(); i++) {
-            spans.add(spanVec.at(i));
+            spans.add(new Span(spanVec.at(i)));
         }
         return spans;
     }
@@ -64,7 +70,7 @@ public class MultiMatch {
      * @param variableName the variable.
      * @return a vector of strings.
      */
-    public List<String> groups(String variableName) {
+    public List<String> groups(String variableName) throws REmatchException {
         cl.rematch.internal.StringVector groupVec = cppMultiMatch.groups(variableName);
         List<String> groups = new ArrayList<>();
         for (int i = 0; i < groupVec.size(); i++) {
@@ -79,7 +85,7 @@ public class MultiMatch {
      * @param variableId the variable id.
      * @return a vector of strings.
      */
-    public List<String> groups(int variableId) {
+    public List<String> groups(int variableId) throws REmatchException {
         cl.rematch.internal.StringVector groupVec = cppMultiMatch.groups(variableId);
         List<String> groups = new ArrayList<>();
         for (int i = 0; i < groupVec.size(); i++) {
@@ -89,13 +95,15 @@ public class MultiMatch {
     }
 
     /**
-     * Computes a multi match that contains the spans inside the span passed as argument.
+     * Computes a multi match that contains the spans inside the span passed as
+     * argument.
      * 
      * @param span a span.
      * @return a multi match.
      */
-    public MultiMatch submatch(cl.rematch.internal.Span span) {
-        cl.rematch.internal.MultiMatch sub = cppMultiMatch.submatch(span);
+    public MultiMatch submatch(Span span) {
+        cl.rematch.internal.MultiMatch sub = cppMultiMatch
+                .submatch(new cl.rematch.internal.Span(span.first(), span.second()));
         return new MultiMatch(sub);
     }
 

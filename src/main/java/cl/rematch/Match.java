@@ -1,6 +1,8 @@
 package cl.rematch;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -9,6 +11,12 @@ import java.util.Map;
 public class Match {
     private final cl.rematch.internal.Match cppMatch;
 
+
+    /**
+     * Creates a new Match. This constructor is intended to be called internally.
+     * 
+     * @param cppMatch internal match.
+     */
     public Match(cl.rematch.internal.Match cppMatch) {
         this.cppMatch = cppMatch;
     }
@@ -19,7 +27,7 @@ public class Match {
      * @param variableName the variable.
      * @return the start index of the span.
      */
-    public long start(String variableName) {
+    public long start(String variableName) throws REmatchException {
         return this.cppMatch.start(variableName);
     }
 
@@ -29,27 +37,27 @@ public class Match {
      * @param variableId The variable id.
      * @return The start index of the span.
      */
-    public long start(int variableId) {
+    public long start(int variableId) throws REmatchException {
         return this.cppMatch.start(variableId);
     }
 
     /**
-     * Retrieves the first index of the span associated to the given variable name.
+     * Retrieves the second index of the span associated to the given variable name.
      * 
      * @param variableName the variable.
      * @return the end index of the span.
      */
-    public long end(String variableName) {
+    public long end(String variableName) throws REmatchException {
         return this.cppMatch.end(variableName);
     }
 
     /**
-     * Retrieves the first index of the span associated to the given variable id.
+     * Retrieves the second index of the span associated to the given variable id.
      * 
      * @param variableId the variable id.
      * @return the end index of the span.
      */
-    public long end(int variableId) {
+    public long end(int variableId) throws REmatchException {
         return this.cppMatch.end(variableId);
     }
 
@@ -59,7 +67,7 @@ public class Match {
      * @param variableName the variable.
      * @return the captured string.
      */
-    public String group(String variableName) {
+    public String group(String variableName) throws REmatchException {
         return this.cppMatch.group(variableName);
     }
 
@@ -69,12 +77,18 @@ public class Match {
      * @param variableId the variable id.
      * @return the captured string.
      */
-    public String group(int variableId) {
+    public String group(int variableId) throws REmatchException {
         return this.cppMatch.group(variableId);
     }
 
-    public cl.rematch.internal.Span span(int variableId) {
-        return this.cppMatch.span(variableId);
+    /**
+     * Retrieves the span associated to the given variable id.
+     * 
+     * @param variableId the variable id.
+     * @return the span.
+     */
+    public Span span(int variableId) throws REmatchException {
+        return new Span(this.cppMatch.span(variableId));
     }
 
     /**
@@ -83,8 +97,8 @@ public class Match {
      * @param variableName the variable.
      * @return the span.
      */
-    public cl.rematch.internal.Span span(String variableName) {
-        return this.cppMatch.span(variableName);
+    public Span span(String variableName) throws REmatchException {
+        return new Span(this.cppMatch.span(variableName));
     }
 
     /**
@@ -92,14 +106,12 @@ public class Match {
      * 
      * @return the list of variables.
      */
-    public String[] variables() {
+    public List<String> variables() {
         cl.rematch.internal.StringVector cppVariables = this.cppMatch.variables();
-        String[] variables = new String[(int) cppVariables.size()];
-
+        List<String> variables = new ArrayList<>();
         for (int i = 0; i < cppVariables.size(); i++) {
-            variables[i] = cppVariables.at(i);
+            variables.add(cppVariables.at(i));
         }
-
         return variables;
     }
 
@@ -109,17 +121,15 @@ public class Match {
      * 
      * @return the map.
      */
-    public Map<String, cl.rematch.internal.Span> groupdict() {
+    public Map<String, Span> groupdict() {
         cl.rematch.internal.StringSpanMap cppGroupDict = this.cppMatch.groupdict();
         cl.rematch.internal.StringVector vars = this.cppMatch.variables();
-        Map<String, cl.rematch.internal.Span> groupDict = new HashMap<>();
+        Map<String, Span> groupDict = new HashMap<>();
 
         for (long i = 0; i < vars.size(); i++) {
-            String key = vars.at(i).toString();
-            cl.rematch.internal.Span span = cppGroupDict.at(key);
-            groupDict.put(key, span);
+            String key = vars.at(i);
+            groupDict.put(key, new Span(cppGroupDict.at(key)));
         }
-
         return groupDict;
     }
 

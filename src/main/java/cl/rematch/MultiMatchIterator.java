@@ -12,6 +12,13 @@ public class MultiMatchIterator implements Iterator<MultiMatch> {
 
     private boolean needToIncrement = false;
 
+    /**
+     * Creates a new MultiMatchIterator. This constructor is intended to be called
+     * internally.
+     * 
+     * @param begin internal begin iterator.
+     * @param end   internal end iterator.
+     */
     public MultiMatchIterator(cl.rematch.internal.MultiMatchIterator begin,
             cl.rematch.internal.MultiMatchIterator end) {
         this.current = begin;
@@ -19,7 +26,7 @@ public class MultiMatchIterator implements Iterator<MultiMatch> {
     }
 
     @Override
-    public boolean hasNext() {
+    public boolean hasNext() throws REmatchException {
         if (needToIncrement) {
             current.operator_increment();
             needToIncrement = false;
@@ -28,7 +35,7 @@ public class MultiMatchIterator implements Iterator<MultiMatch> {
     }
 
     @Override
-    public MultiMatch next() {
+    public MultiMatch next() throws REmatchException {
         if (needToIncrement) {
             current.operator_increment();
             needToIncrement = false;
@@ -43,15 +50,33 @@ public class MultiMatchIterator implements Iterator<MultiMatch> {
         return new MultiMatch(cppMatch);
     }
 
+    /**
+     * Obtains the internal multi match. This method is intended to be called
+     * internally.
+     * 
+     * @return the internal multi match.
+     */
     public MultiMatch operatorStar() {
         current.operator_star();
         return new MultiMatch(current.operator_star());
     }
 
+    /**
+     * Compares this to other MultiMatchIterator.
+     * 
+     * @param other other iterator.
+     * @return true if they are equal, false otherwise.
+     */
     public boolean operatorEquals(MultiMatchIterator other) {
         return current.operatorEquals(other.current);
     }
 
+    /**
+     * Compares this to other MultiMatchIterator.
+     * 
+     * @param other other iterator.
+     * @return false if they are equal, true otherwise.
+     */
     public boolean operatorNotEquals(MultiMatchIterator other) {
         return current.operatorNotEquals(other.current);
     }

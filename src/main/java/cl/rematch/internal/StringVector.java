@@ -1,7 +1,11 @@
 package cl.rematch.internal;
 
-import org.bytedeco.javacpp.*;
-import org.bytedeco.javacpp.annotation.*;
+import org.bytedeco.javacpp.Loader;
+import org.bytedeco.javacpp.Pointer;
+import org.bytedeco.javacpp.annotation.Cast;
+import org.bytedeco.javacpp.annotation.Name;
+import org.bytedeco.javacpp.annotation.Properties;
+import org.bytedeco.javacpp.annotation.StdString;
 
 @Properties(inherit = REmatchConfig.class)
 @Name("std::vector<std::string>")

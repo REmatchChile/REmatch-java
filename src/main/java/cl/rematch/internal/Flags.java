@@ -1,7 +1,9 @@
 package cl.rematch.internal;
 
-import org.bytedeco.javacpp.*;
-import org.bytedeco.javacpp.annotation.*;
+import org.bytedeco.javacpp.Loader;
+import org.bytedeco.javacpp.Pointer;
+import org.bytedeco.javacpp.annotation.Namespace;
+import org.bytedeco.javacpp.annotation.Properties;
 
 @Properties(inherit = REmatchConfig.class)
 @Namespace("REmatch::library_interface")

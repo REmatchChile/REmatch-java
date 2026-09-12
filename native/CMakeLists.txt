@@ -32,6 +32,8 @@ endif()
 file(GLOB_RECURSE JAVACPP_SOURCES
     "${CMAKE_SOURCE_DIR}/../src/main/java/cl/rematch/internal/*.java"
 )
+# REmatchException must be visible to JavaCPP
+list(APPEND JAVACPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/main/java/cl/rematch/REmatchException.java")
 
 file(GLOB JAVA_SOURCES
     "${CMAKE_SOURCE_DIR}/../src/main/java/cl/rematch/*.java"
@@ -74,7 +76,7 @@ set(JAVA_CLASSES_STAMP "${CMAKE_BINARY_DIR}/compiled.stamp")
 # Compile JavaCPP sources
 add_custom_command(
     OUTPUT ${JAVA_CLASSES_STAMP}
-    COMMAND ${Java_JAVAC_EXECUTABLE} 
+    COMMAND ${Java_JAVAC_EXECUTABLE}
             -cp ${JAVACPP_JAR}
             -d ${CMAKE_BINARY_DIR}/classes
             ${JAVACPP_SOURCES}
@@ -115,6 +117,7 @@ add_custom_command(
             ${JAVA_OPTS}
             "-Dplatform.includepath=${REMATCH_JAVA_INCLUDES}"
             "-Dplatform.linkpath=${REMATCH_LIB_DIR}"
+            # -nodelete
             cl.rematch.internal.REmatchConfig
             cl.rematch.internal.Flags
             cl.rematch.internal.Query

@@ -3,8 +3,7 @@ package cl.rematch;
 /**
  * Constants used in the constructor of Query and MultiQuery.
  */
-public class Constants {
-
+public final class Constants {
     /**
      * The maximum number of deterministic states of the automata used in the
      * evaluation step.
@@ -22,4 +21,10 @@ public class Constants {
      * document is of type String.
      */
     public static final int BUFFER_SIZE = 1024 * 1024;
+
+    /**
+     * Prevent instantiation.
+     */
+    private Constants() {
+    }
 }

@@ -3,6 +3,8 @@ package cl.rematch.internal;
 import org.bytedeco.javacpp.*;
 import org.bytedeco.javacpp.annotation.*;
 
+import cl.rematch.REmatchException;
+
 @Properties(inherit = REmatchConfig.class)
 @Namespace("REmatch")
 public class Match extends Pointer {
@@ -14,21 +16,21 @@ public class Match extends Pointer {
         super(p);
     }
 
-    public native long start(@Const @ByRef @StdString String variable_name);
+    public native long start(@Const @ByRef @StdString String variable_name) throws REmatchException;
 
-    public native long start(@Cast("uint_fast32_t") int variable_id);
+    public native long start(@Cast("uint_fast32_t") int variable_id) throws REmatchException;
 
-    public native long end(@Const @ByRef @StdString String variable_name);
+    public native long end(@Const @ByRef @StdString String variable_name) throws REmatchException;
 
-    public native long end(@Cast("uint_fast32_t") int variable_id);
+    public native long end(@Cast("uint_fast32_t") int variable_id) throws REmatchException;
 
-    public native @StdString String group(@Const @ByRef @StdString String variable_name);
+    public native @StdString String group(@Const @ByRef @StdString String variable_name) throws REmatchException;
 
-    public native @StdString String group(@Cast("uint_fast32_t") int variable_id);
+    public native @StdString String group(@Cast("uint_fast32_t") int variable_id) throws REmatchException;
 
-    public native @ByVal Span span(@Const @ByRef @StdString String variable_name);
+    public native @ByVal Span span(@Const @ByRef @StdString String variable_name) throws REmatchException;
 
-    public native @ByVal Span span(@Cast("uint_fast32_t") int variable_id);
+    public native @ByVal Span span(@Cast("uint_fast32_t") int variable_id) throws REmatchException;
 
     public native @ByVal StringSpanMap groupdict();
 

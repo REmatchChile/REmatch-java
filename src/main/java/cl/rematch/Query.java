@@ -19,7 +19,8 @@ public class Query {
      * @param maxDeterministicStates the maximum number of deterministic states.
      * @param bufferSize             the buffer size.
      */
-    public Query(String pattern, Flags flags, int maxMempoolDuplications, int maxDeterministicStates, int bufferSize) {
+    public Query(String pattern, Flags flags, int maxMempoolDuplications, int maxDeterministicStates, int bufferSize)
+            throws REmatchException {
         this.cppQuery = new cl.rematch.internal.Query(pattern, flags.getValue(), maxMempoolDuplications,
                 maxDeterministicStates,
                 bufferSize);
@@ -31,7 +32,7 @@ public class Query {
      * @param pattern the REQL query.
      * @param flags   the flags.
      */
-    public Query(String pattern, Flags flags) {
+    public Query(String pattern, Flags flags) throws REmatchException {
         this(pattern, flags, Constants.MAX_MEMPOOL_DUPLICATIONS, Constants.MAX_DETERMINISTIC_STATES,
                 Constants.BUFFER_SIZE);
     }
@@ -41,7 +42,7 @@ public class Query {
      * 
      * @param pattern the REQL query.
      */
-    public Query(String pattern) {
+    public Query(String pattern) throws REmatchException {
         this(pattern, Flags.none(), Constants.MAX_MEMPOOL_DUPLICATIONS, Constants.MAX_DETERMINISTIC_STATES,
                 Constants.BUFFER_SIZE);
     }
@@ -52,7 +53,7 @@ public class Query {
      * @param document the document.
      * @return true if there is a match, false otherwise.
      */
-    public boolean check(String document) {
+    public boolean check(String document) throws REmatchException {
         return cppQuery.check(document);
     }
 
@@ -63,7 +64,7 @@ public class Query {
      * @param reader the reader.
      * @return true if there is a match, false otherwise.
      */
-    public boolean check(Reader reader) {
+    public boolean check(Reader reader) throws REmatchException {
         return cppQuery.check(reader.cppReader.get());
     }
 
@@ -72,11 +73,11 @@ public class Query {
      * 
      * @return a list of variables.
      */
-    public String[] variables() {
+    public List<String> variables() {
         cl.rematch.internal.StringVector cppVariables = this.cppQuery.variables();
-        String[] variables = new String[(int) cppVariables.size()];
+        List<String> variables = new ArrayList<>();
         for (int i = 0; i < cppVariables.size(); i++) {
-            variables[i] = cppVariables.at(i);
+            variables.add(cppVariables.at(i));
         }
         return variables;
     }
@@ -88,7 +89,7 @@ public class Query {
      * @param document the document.
      * @return a match or null.
      */
-    public Match findOne(String document) {
+    public Match findOne(String document) throws REmatchException {
         cl.rematch.internal.OptionalMatch match = cppQuery.findone(document);
         if (match.hasValue()) {
             return new Match(match.value());
@@ -103,7 +104,7 @@ public class Query {
      * @param reader the reader.
      * @return a match or null.
      */
-    public Match findOne(Reader reader) {
+    public Match findOne(Reader reader) throws REmatchException {
         cl.rematch.internal.OptionalMatch match = cppQuery.findone(reader.cppReader.get());
         if (match.hasValue()) {
             return new Match(match.value());
@@ -118,7 +119,7 @@ public class Query {
      * @param limit    the maximum number of matches.
      * @return a list of matches.
      */
-    public List<Match> findMany(String document, int limit) {
+    public List<Match> findMany(String document, int limit) throws REmatchException {
         cl.rematch.internal.MatchVector cppMatches = cppQuery.findmany(document, limit);
         List<Match> result = new ArrayList<>();
         for (int i = 0; i < cppMatches.size(); i++) {
@@ -135,7 +136,7 @@ public class Query {
      * @param limit  the maximum number of matches.
      * @return a list of matches.
      */
-    public List<Match> findMany(Reader reader, int limit) {
+    public List<Match> findMany(Reader reader, int limit) throws REmatchException {
         cl.rematch.internal.MatchVector cppMatches = cppQuery.findmany(reader.cppReader.get(), limit);
         List<Match> result = new ArrayList<>();
         for (int i = 0; i < cppMatches.size(); i++) {
@@ -150,7 +151,7 @@ public class Query {
      * @param document the document.
      * @return a list of matches.
      */
-    public List<Match> findAll(String document) {
+    public List<Match> findAll(String document) throws REmatchException {
         cl.rematch.internal.MatchVector cppMatches = cppQuery.findall(document);
         List<Match> result = new ArrayList<>();
         for (int i = 0; i < cppMatches.size(); i++) {
@@ -166,7 +167,7 @@ public class Query {
      * @param reader the reader.
      * @return a list of matches.
      */
-    public List<Match> findAll(Reader reader) {
+    public List<Match> findAll(Reader reader) throws REmatchException {
         cl.rematch.internal.MatchVector cppMatches = cppQuery.findall(reader.cppReader.get());
         List<Match> result = new ArrayList<>();
         for (int i = 0; i < cppMatches.size(); i++) {
@@ -181,7 +182,7 @@ public class Query {
      * @param document the document.
      * @return a generator of matches.
      */
-    public MatchGenerator findIter(String document) {
+    public MatchGenerator findIter(String document) throws REmatchException {
         cl.rematch.internal.MatchGenerator generator = cppQuery.finditer(document);
         return generator != null ? new MatchGenerator(generator) : null;
     }
@@ -193,7 +194,7 @@ public class Query {
      * @param reader the reader.
      * @return a generator of matches.
      */
-    public MatchGenerator findIter(Reader reader) {
+    public MatchGenerator findIter(Reader reader) throws REmatchException {
         cl.rematch.internal.MatchGenerator generator = cppQuery.finditer(reader.cppReader.get());
         return generator != null ? new MatchGenerator(generator) : null;
     }

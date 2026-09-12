@@ -1,7 +1,12 @@
 package cl.rematch.internal;
 
-import org.bytedeco.javacpp.*;
-import org.bytedeco.javacpp.annotation.*;
+import org.bytedeco.javacpp.Loader;
+import org.bytedeco.javacpp.Pointer;
+import org.bytedeco.javacpp.annotation.MemberGetter;
+import org.bytedeco.javacpp.annotation.MemberSetter;
+import org.bytedeco.javacpp.annotation.Name;
+import org.bytedeco.javacpp.annotation.Opaque;
+import org.bytedeco.javacpp.annotation.Properties;
 
 @Properties(inherit = REmatchConfig.class)
 @Name("std::pair<int64_t, int64_t>")

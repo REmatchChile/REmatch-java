@@ -1,7 +1,14 @@
 package cl.rematch.internal;
 
-import org.bytedeco.javacpp.*;
-import org.bytedeco.javacpp.annotation.*;
+import org.bytedeco.javacpp.Loader;
+import org.bytedeco.javacpp.Pointer;
+import org.bytedeco.javacpp.annotation.ByPtr;
+import org.bytedeco.javacpp.annotation.ByRef;
+import org.bytedeco.javacpp.annotation.Name;
+import org.bytedeco.javacpp.annotation.Namespace;
+import org.bytedeco.javacpp.annotation.Properties;
+
+import cl.rematch.REmatchException;
 
 @Properties(inherit = REmatchConfig.class)
 @Namespace("REmatch")
@@ -18,7 +25,7 @@ public class MultiMatchIterator extends Pointer {
     public native @ByPtr MultiMatch operator_arrow();
 
     @Name("operator++")
-    public native @ByRef MultiMatchIterator operator_increment();
+    public native @ByRef MultiMatchIterator operator_increment() throws REmatchException;
 
     @Name("operator==")
     public native boolean operatorEquals(@ByRef MultiMatchIterator other);
