@@ -24,6 +24,14 @@ public class Case {
             boolean expected) {
     }
 
+    public record FindMany(
+            String name,
+            String pattern,
+            String document,
+            int limit,
+            Set<Mock.Match> expected) {
+    }
+
     public record FindIterM(
             String name,
             String pattern,

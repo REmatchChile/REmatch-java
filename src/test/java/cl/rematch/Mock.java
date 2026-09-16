@@ -1,8 +1,10 @@
 package cl.rematch;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class Mock {
     public record Match(
@@ -13,6 +15,18 @@ public class Mock {
 
         public static Mock.Match of() {
             return new Mock.Match(Map.of());
+        }
+
+        @Override
+        public String toString() {
+            List<String> spans = new ArrayList<>();
+
+            for (Entry<String, Span> entry : map.entrySet()) {
+                spans.add(String.format("%s: {%s, %s}", entry.getKey(), entry.getValue().first(),
+                        entry.getValue().second()));
+            }
+
+            return "{" + String.join(", ", spans) + "}";
         }
     }
 
@@ -32,6 +46,22 @@ public class Mock {
 
         public static Mock.MultiMatch of() {
             return new Mock.MultiMatch(Map.of());
+        }
+
+        @Override
+        public String toString() {
+            List<String> spans = new ArrayList<>();
+
+            for (Entry<String, List<Span>> entry : map.entrySet()) {
+                List<String> var_spans = new ArrayList<>();
+
+                for (Span span : entry.getValue()) {
+                    var_spans.add(String.format("{%s, %s}", span.first(), span.second()));
+                }
+                spans.add(entry.getKey() + ": [" + String.join(", ", var_spans) + "]");
+            }
+
+            return "{" + String.join(", ", spans) + "}";
         }
     }
 
