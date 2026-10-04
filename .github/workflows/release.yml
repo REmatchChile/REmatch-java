@@ -50,10 +50,10 @@ jobs:
           - os: ubuntu-22.04
             classifier: linux-x86_64
 
-          - os: macos-26
+          - os: macos-15
             classifier: macosx-arm64
 
-          - os: macos-26-intel
+          - os: macos-15-intel
             classifier: macosx-x86_64
 
     steps:

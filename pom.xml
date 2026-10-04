@@ -416,6 +416,13 @@
               <include>cl/rematch/internal/macosx-x86_64/libjniREmatch.dylib</include>
             </includes>
           </resource>
+          <resource>
+            <directory>${project.basedir}/build/REmatch-install/lib</directory>
+            <includes>
+              <include>libREmatch*</include>
+            </includes>
+            <targetPath>cl/rematch/internal/macosx-x86_64</targetPath>
+          </resource>
         </resources>
         <plugins>
           <plugin>
@@ -470,6 +477,13 @@
             <includes>
               <include>cl/rematch/internal/macosx-arm64/libjniREmatch.dylib</include>
             </includes>
+          </resource>
+          <resource>
+            <directory>${project.basedir}/build/REmatch-install/lib</directory>
+            <includes>
+              <include>libREmatch*</include>
+            </includes>
+            <targetPath>cl/rematch/internal/macosx-arm64</targetPath>
           </resource>
         </resources>
         <plugins>
