@@ -16,7 +16,7 @@ To use REmatch on your own Java project you can download it using:
     <dependency>
       <groupId>cl.rematch</groupId>
       <artifactId>rematch-platform</artifactId>
-      <version>0.1.3</version>
+      <version>0.1.4</version>
       <type>pom</type>
     </dependency>
 ```
@@ -24,8 +24,8 @@ To use REmatch on your own Java project you can download it using:
 <!-- * Gradle:
 
 ```kts
-    implementation("cl.rematch:rematch:0.1.3")
-    implementation("cl.rematch:rematch:0.1.3:linux-x86_64")
+    implementation("cl.rematch:rematch:0.1.4")
+    implementation("cl.rematch:rematch:0.1.4:linux-x86_64")
 ``` -->
 
 ## Examples
