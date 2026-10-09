@@ -7,7 +7,7 @@ package cl.rematch;
  * @param first
  * @param second
  */
-record Span(long first, long second) {
+public record Span(long first, long second) {
     /**
      * Creates a new Span. This constructor is intended to be called internally.
      * 

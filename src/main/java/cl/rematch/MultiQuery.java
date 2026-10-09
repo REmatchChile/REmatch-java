@@ -31,7 +31,7 @@ public class MultiQuery {
      * @param pattern the REQL query.
      */
     public MultiQuery(String pattern) throws REmatchException {
-        this(pattern, Flags.none(), Constants.MAX_MEMPOOL_DUPLICATIONS, Constants.MAX_MEMPOOL_DUPLICATIONS,
+        this(pattern, Flags.none(), Constants.MAX_MEMPOOL_DUPLICATIONS, Constants.MAX_DETERMINISTIC_STATES,
                 Constants.BUFFER_SIZE);
     }
 
